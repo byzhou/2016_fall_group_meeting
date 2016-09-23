@@ -1,48 +1,297 @@
 \documentclass{beamer}
 
 \input{header-presentation}
-\title[Example Presentation]{Example Beamer Presentation}
-\author[schuyler.eldridge@gmail.com]{Schuyler Eldridge}
+\usepackage{graphicx}
+\graphicspath{{../img/}}
+\title[Group Meeting Presentation]{Quantifying and Improving the Efficiency of Hardware-based Mobile Malware Detectors}
+\author[bobzhou@bu.edu]{Mikhail Kazdagli, Vijay Janapa Reddi, Mohit Tiwari\\
+Presented by Boyou Zhou}
 \date[\today]{\today}
 
 \begin{document}
 \maketitle
 
-\section*{Example Slides}
+\section{High Level Summary}
 
-\begin{frame}{Blocks Everywhere}
-  \begin{block}{Blocks are better?}
-    \begin{itemize}
-    \item Everything in beamer seems to look better in blocks
-    \item So, the default slide has a block and an itemized list
-      \begin{itemize}
-      \item You can also nest itemized lists
-      \end{itemize}
-    \end{itemize}
-  \end{block}
+\begin{frame}{Arch + Software Defense}
+	\begin{columns}[b]
+		\column{0.5\textwidth}
+		\begin{block}{Hardware for Security}
+			\begin{itemize}
+				\item To overcome semantics gaps to identify malwares on the hardware level
+				\item To ''understand'' the binary with machine learning algorithms
+				\item To classify malwares from benignwares
+			\end{itemize}
+		\end{block}
+		
+		\column{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{overview_of_Sherlock.png}
+			\caption{Overview of Sherlock}
+		\end{figure}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{Column Slide}
-  \begin{columns}[b]
-    \column{0.60\textwidth}
-    \begin{block}{First \textbf{BIG} Column}
-      \begin{itemize}
-      \item You can split content into columns
-      \item Column size is governed manually
-      \item Column alignment (here \texttt{b}, bottom) can also be specified
-      \end{itemize}
+\begin{frame}{Hardware Performance Counters}
+	\begin{block}{Academic Approaches}
+		\begin{itemize}
+			\item Supervised learning\footnote[frame]{Demme ISCA'13, Khasawneh RAID'15}
+			\item Unsupervised learning\footnote[frame]{Tang RAID'14}
+			\item Hardware implemented\footnote[frame]{Ozsoy HPCA'15}
+		\end{itemize}
     \end{block}
-
-    \column{0.35\textwidth}
-    \begin{block}{Second {\tiny little} Column}
-      \begin{itemize}
-      \item ALPHA
-      \item BRAVO
-      \item CHARLIE
-      \item DELTA
-      \item ECHO
-      \end{itemize}
-    \end{block}
-  \end{columns}
+	\begin{block}{Industrial Approach}
+		\begin{itemize}
+			\item Qualcomm snapdragon\footnote[frame]{https://www.qualcomm.com/products/snapdragon/security/smart-protect}
+		\end{itemize}
+	\end{block}
 \end{frame}
+
+\begin{frame}{Design Targets}
+	\begin{columns}
+		\column{0.6\textwidth}
+		\begin{block}{Traditional designs}
+			\begin{itemize}
+				\item without various delays in malware triggering
+				\item without user interactions
+			\end{itemize}
+		\end{block}
+\pause
+		\begin{block}{Sherlock designed to detect}
+			\begin{itemize}
+				\item Malwares that evade detections (static analysis)
+				\item Malwares that hide behind benign programs
+			\end{itemize}
+		\end{block}
+\pause
+
+		\column{0.4\textwidth}
+		\begin{block}{Sherlock are evaluated}
+			\begin{itemize}
+				\item with synthesized combination of malware
+				\item when benign and malware programs with real user inputs
+			\end{itemize}
+		\end{block}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Metric Explanation}
+	\begin{block}{Metric}
+		\begin{itemize}
+			\item A working operating range that Sherlock can give alert to the
+				system.
+\pause
+			\item An operating range that the smallest malware hidden in
+				benignware that Sherlock can detect with certain pre-set false
+				positive rate.
+\pause
+			\item e.g. Firefox got compromised with malware that can still SMSs 
+				and contact information when Sherlock system can detect the malwares 
+				with pre-set $5\%$ false positive rate.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Evaluations}
+	\begin{itemize}
+		\item Unsupervised Learning $\sim24.7\%$ improvements in ROC curve
+			(AUC) metric than prior work\footnote[frame]{Tang RAID'14}
+		\item Supervised Learning $\sim12.5\%$ improvements in ROC curve
+			(AUC) metric than prior work\footnote[frame]{Demme ISCA'13}
+		\item Synthesized malware can be detected by HMD but not static
+			analysis tool
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ROC AUC example}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{true_false_positive_rate.png}
+		\caption{ROC(Receiver Operating Characteristic) AUC(Area Under Curve)}
+	\end{figure}
+\end{frame}
+
+\section{Motivations}
+\begin{frame}{Challenges in HMDs(Hardware Malware Detectors)}
+	\begin{itemize}
+		\item Small changes in deployments of malware will cheat the HMDs. 
+			e.g. number of malwares in one application, delays, or change
+			of victims
+		\item Changes in user inputs will destroy the HMD profile.
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Compared to Previous Work}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{malware_comparison.png}
+		\caption{Previous work will miss-classified malware. Most of
+			previous work\footnote{Demme ISCA'13} experiments last less than 10
+			seconds, while stealing a photo may require 3 seconds.  This paper,
+			experiments are measured on a much longer time scale.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Compared to Previous Work}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{diff_firefox.png}
+		\caption{Benign applications with malware are closer to benignware
+			without malware than other benignware.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Compared to Previous Work}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{real_user_input.png}
+		\caption{Real user inputs changes will not be able to fit in previous
+			work classifiers.}
+	\end{figure}
+\end{frame}
+
+\section{Malware Synthesizer}
+
+\begin{frame}{Categories of Malware}
+	\begin{itemize}
+		\item Information Stealer $\sim$ e.g. stealing SMSs, device IDs
+		\item Network Nodes $\sim$ e.g. blocking network to fraud
+		\item Compute Nodes $\sim$ e.g. running bitcoin miner on compromised machines
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Different Classes in Malware}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{malware_classes.png}
+		\caption{Classes in malware}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Malware behaviors}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{malware_classes2.png}
+		\caption{Examples of malware behaviors and their contributions to total
+		malware dataset}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Different Classes Comparisons}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{malware_class_comparison.png}
+		\caption{4 Information Stealer, 2 Network Nodes, and 1 Compute Node}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Different App Comparisons}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{app_comparison.png}
+		\caption{Real User inputs. Each application traces up to $\sim$ 2 hours.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Malware Synthesizer}
+	\begin{itemize}
+		\item The payload of the malware will be repackaged into benignware.
+		\item Payloads are deployed with different amount of malwares and
+			different delays of triggering the malware.
+		\item \textit{apktool} is used for decompiling and repackaging. After 
+			Repacking, a new application is created.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Performance Counters Choices}
+	\begin{itemize}
+		\item Memory loads/reads
+		\item Immediate control flow instruction counts
+		\item Indirect control flow instruction counts
+		\item Total number of executed instructions
+		\item Integer computations 
+	\end{itemize}
+\end{frame}
+
+\section{Evaluation}
+
+\begin{frame}{ML algorithms and feature selections}
+	\begin{block}{ML algorithms}
+		\begin{itemize}
+			\item Bag-of-words algorithm $\sim$ Discrete Wavelet Transform to
+			extract features (In the paper, there are also comparisons between Discrete
+			Wavelet Transform and Power Transform)
+			\item Markov Model $\sim$ Bayesian Information Criterion to find
+				best 10 $\sim$ 20 states
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Markov Example}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.33\textwidth]{benign_malware_comparison_3.png}
+		\includegraphics[width=0.33\textwidth]{malware_benign_comparison_2.png}
+		\includegraphics[width=0.33\textwidth]{malware_benign_comparison.png}
+		\caption{Probability means probability of benignity. With higher intensity 
+			of malware, the detector can detect malware at an earlier state.}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Power Transform Visualization}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{distribution_load_store_evens.png}
+		\caption{Clean profile is normalized to Gaussian Distribution.}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Different Transform Methods}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{transform_comparison.png}
+		\caption{DWT is $\sim24.7\%$ better than power transform.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Bag-of-Words}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{bag_of_words.png}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Markov Model}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{markov_model.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Two Class classifier}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{area_under_the_curve.png}
+		\caption{Balanced means that all the malware are labeled as one label.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Random Forest}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{random_forest.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Thank you}
+	Thank you~	
+\end{frame}
+
 \end{document}
+
